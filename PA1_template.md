@@ -43,6 +43,7 @@ library(ggplot2)
 ```
 
 ```r
+library(RColorBrewer)
 activ <- read.csv("./activity.csv")
 activ$date <- ymd(activ$date)
 ```
@@ -115,7 +116,6 @@ Let's address the missing values.
 
 ```r
 nbna <- sum(is.na(activ$steps))
-##activ_clean <- subset(activ, !is.na(activ$steps))
 
 mean.interval <- mean.day/(288)
 activ2 <- activ
@@ -178,11 +178,14 @@ table(activ2$weekday)
 ```r
 by5min <- aggregate(activ2$steps,list(activ2$interval, activ2$weekday), mean)
 colnames(by5min) <- c("interval", "weekday","mean.steps")
-ggplot(data = by5min, aes(x = interval,y = mean.steps)) + geom_line() + facet_grid(weekday~.)
+myColors <- brewer.pal(3,"Set1")
+names(myColors) <- levels(by5min$weekday)
+colScale <- scale_colour_manual(name = "weekday",values = myColors)
+ggplot(data = by5min, aes(x = interval,y = mean.steps, colour = weekday)) + geom_line() + facet_grid(weekday~.) + colScale
 ```
 
 ![](PA1_template_files/figure-html/q4.2-1.png)<!-- -->
 
-We can notice differences in the subject's activity depending on the day of the week. During the weekdays, activity peaks in the morning and then remains at a lower level during much of the day. By contrast, activity starts later during the weekends and then remains steady during the day until the evening. 
+We can notice differences in the subject's activity depending on the day of the week. During the weekdays, activity peaks in the morning and then remains at a lower level during much of the day. By contrast, activity starts later during the weekends and then remains volatile with ups and downs all day until the evening. 
 
 Thanks for the review !

@@ -97,12 +97,15 @@ ggplot(data = by5min, aes(x = interval,y = mean.steps))+geom_line()
 
 
 ```r
-max.steps <- round(max(by5min$mean.steps))
+max.steps <- max(by5min$mean.steps)
 top.interval <- by5min$interval[which(by5min$mean.steps == max.steps)]
-hour <- hour(as_datetime(top.interval))
+top.hour <- floor(top.interval/100)
+top.minute <- top.interval%%100
+endtop.hour <- floor((top.interval+5)/100)
+endtop.minute <- (top.interval+5)%%100
 ```
 
-According to the experience, the subject has a peak time in the interval at h.
+According to the experience, the subject has a peak time in the interval from 8h35 to 8h40.
 The average number of steps from the user during this interval is 206.
 
 ## Imputing missing values  
@@ -120,7 +123,7 @@ activ2$steps[which(is.na(activ2$steps))] <- mean.interval
 ```
 
 1. In the original data, 2304 intervals have missing values (coded as \color{red}{\verb|NA|}NA).
-2. Let's replace those NAs with the daily mean calculated earlier. To do so, let's divide the mean.day by the number of intervals in one day (288). The result is an interval mean of 32.4791667 steps per interval.
+2. Let's replace those NAs with the daily mean calculated earlier. To do so, let's divide the mean.day by the number of intervals in one day (288). The result is an interval mean of 32.48 steps per interval.
 3. A new dataset "activ2" without missing values is created.
 
 
@@ -149,7 +152,7 @@ print(median.day.new)
 ```
 ## [1] 10395
 ```
-4. Based on this new dataset, the mean number of steps per day is 1.0581\times 10^{4}. Compared with the initial value, the mean has increased. However, the median value hasn't changed at 1.0395\times 10^{4}.
+4. Based on this new dataset, the mean number of steps per day is 10581. Compared with the initial value, the mean has increased. However, the median value hasn't changed at 10395.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 

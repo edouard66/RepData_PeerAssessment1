@@ -51,13 +51,16 @@ ggplot(data = by5min, aes(x = interval,y = mean.steps))+geom_line()
 ```
 
 ```{r q2.2}
-max.steps <- round(max(by5min$mean.steps))
+max.steps <- max(by5min$mean.steps)
 top.interval <- by5min$interval[which(by5min$mean.steps == max.steps)]
-hour <- hour(as_datetime(top.interval))
+top.hour <- floor(top.interval/100)
+top.minute <- top.interval%%100
+endtop.hour <- floor((top.interval+5)/100)
+endtop.minute <- (top.interval+5)%%100
 ```
 
-According to the experience, the subject has a peak time in the interval at `r top.interval`h.
-The average number of steps from the user during this interval is `r max.steps`.
+According to the experience, the subject has a peak time in the interval from `r top.hour`h`r top.minute` to `r endtop.hour`h`r endtop.minute`.
+The average number of steps from the user during this interval is `r round(max.steps)`.
 
 ## Imputing missing values  
 
@@ -73,7 +76,7 @@ activ2$steps[which(is.na(activ2$steps))] <- mean.interval
 ```
 
 1. In the original data, `r nbna` intervals have missing values (coded as \color{red}{\verb|NA|}NA).
-2. Let's replace those NAs with the daily mean calculated earlier. To do so, let's divide the mean.day by the number of intervals in one day (288). The result is an interval mean of `r mean.interval` steps per interval.
+2. Let's replace those NAs with the daily mean calculated earlier. To do so, let's divide the mean.day by the number of intervals in one day (288). The result is an interval mean of `r round(mean.interval,2)` steps per interval.
 3. A new dataset "activ2" without missing values is created.
 
 ```{r q3.4}
@@ -85,7 +88,7 @@ median.day.new <- median(sum_steps2$steps)
 print(mean.day.new)
 print(median.day.new)
 ```
-4. Based on this new dataset, the mean number of steps per day is `r mean.day.new`. Compared with the initial value, the mean has increased. However, the median value hasn't changed at `r median.day.new`.
+4. Based on this new dataset, the mean number of steps per day is `r as.character(mean.day.new)`. Compared with the initial value, the mean has increased. However, the median value hasn't changed at `r as.character(median.day.new)`.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
